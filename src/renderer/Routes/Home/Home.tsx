@@ -1,12 +1,12 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Settings from './Settings/Settings';
 
 function Home() {
 	return (
 		<Box p="1rem" display="flex" flexDirection="column">
-			<Box p="2rem 0 4rem">
+			<Box p="2rem 0 4rem" display="flex" justifyContent="space-between">
 				<Box display="flex" gap="1rem" alignItems="center">
-					<Box mr="-20px">
+					<Box mr="-20px" display="flex" flexDirection="column">
 						<Typography variant="h2" color="primary">
 							S.M.A.R
 						</Typography>
@@ -24,10 +24,51 @@ function Home() {
 					</Box>
 					<Typography variant="h2">🌊</Typography>
 				</Box>
+				{/* Statistics */}
+				<Box>
+					<Typography align="right">v1.0.0</Typography>
+					<Typography align="right">Spammed 0 Messages</Typography>
+				</Box>
 			</Box>
-			<Paper sx={{ p: '1rem ' }}>
-				<Settings />
-			</Paper>
+			<Settings />
+			<Box
+				position="absolute"
+				top="0"
+				bottom="0"
+				left="0"
+				right="0"
+				display="flex"
+				zIndex="-1"
+			>
+				<Box
+					position="relative"
+					flex={1}
+					overflow="hidden"
+					style={{ filter: 'blur(200px)' }}
+				>
+					<Box
+						position="absolute"
+						top="0"
+						bottom="0"
+						left="0"
+						right="0"
+						style={{
+							background: 'linear-gradient(#ff00e0, transparent)',
+						}}
+					/>
+					<Box
+						position="absolute"
+						top="0"
+						bottom="0"
+						left="0"
+						right="0"
+						style={{
+							background:
+								'linear-gradient(to left, #0089ff, transparent)',
+						}}
+					/>
+				</Box>
+			</Box>
 		</Box>
 	);
 }

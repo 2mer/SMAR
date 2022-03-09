@@ -9,12 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { setupIPC } from './ipc';
+import ExecutionApi from './Execution/ExecutionApi';
 
 export default class AppUpdater {
 	constructor() {
@@ -129,5 +130,19 @@ app.whenReady()
 			// dock icon is clicked and there are no other windows open.
 			if (mainWindow === null) createWindow();
 		});
+
+		// register global hotkeys
+		const ret = globalShortcut.register('Super+Alt+S', () => {
+			console.log('Super+Alt+S is pressed');
+		});
+
+		if (!ret) {
+			console.log('Global hotkey registration failed');
+		}
 	})
 	.catch(console.log);
+
+app.on('will-quit', () => {
+	// Unregister all shortcuts.
+	globalShortcut.unregisterAll();
+});

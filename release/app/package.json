@@ -14,7 +14,6 @@
     "postinstall": "npm run electron-rebuild && npm run link-modules"
   },
   "dependencies": {
-    "clipboardy": "^3.0.0",
     "robotjs": "^0.6.0"
   },
   "license": "MIT"

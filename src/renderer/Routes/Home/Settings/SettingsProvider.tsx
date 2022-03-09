@@ -11,8 +11,6 @@ export default function SettingsProvider({ children }) {
 			.catch((err) => console.error(err));
 	}, []);
 
-	console.log('settings', settings);
-
 	return (
 		<SettingsContext.Provider value={settings}>
 			{children}
