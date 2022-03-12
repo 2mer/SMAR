@@ -25,6 +25,14 @@ class ExecutionApi {
 		robot.keyTap('v', 'control');
 	}
 
+	public static click() {
+		robot.mouseClick();
+	}
+
+	public static keyToggle(key, status, modifier = []) {
+		robot.keyToggle(key, status, modifier);
+	}
+
 	public static async sleep(ms: number) {
 		// create a simple timeout promise
 		const promise = new Promise<void>((resolve) => {
@@ -38,7 +46,8 @@ class ExecutionApi {
 		message,
 		amount = 0,
 		startDelay = 0,
-		messageDelay = 1000,
+		messageInterval = 0,
+		execMode = true,
 	}) {
 		let running = true;
 
@@ -46,14 +55,20 @@ class ExecutionApi {
 			running = false;
 		};
 
-		const runnable = new Promise(async () => {
+		ExecutionApi.robot.setKeyboardDelay(10);
+
+		const runnable = new Promise(async (resolve) => {
 			let iteration = 0;
 
 			const smg = () => {
-				this.sendMessage(
-					ExecutionApi.constructMessage({ message, iteration }),
-					{}
-				);
+				if (execMode) {
+					ExecutionApi.execLine({ message, iteration });
+				} else {
+					this.sendMessage(
+						ExecutionApi.constructMessage({ message, iteration }),
+						{}
+					);
+				}
 			};
 
 			await ExecutionApi.sleep(startDelay);
@@ -62,15 +77,17 @@ class ExecutionApi {
 				while (running) {
 					smg();
 					iteration++;
-					await ExecutionApi.sleep(messageDelay);
+					await ExecutionApi.sleep(messageInterval);
 				}
 			} else {
 				for (let i = 0; i < amount && running; i++) {
 					smg();
 					iteration++;
-					await ExecutionApi.sleep(messageDelay);
+					await ExecutionApi.sleep(messageInterval);
 				}
 			}
+
+			resolve('done');
 		});
 
 		return [runnable, abort];
@@ -78,7 +95,15 @@ class ExecutionApi {
 
 	public static constructMessage({ message, iteration }) {
 		const msg = eval(
-			`'use strict'; const index=${iteration}; \`${message}\``
+			`'use strict'; const index=${iteration}; const api=${ExecutionApi}; \`${message}\``
+		);
+
+		return msg;
+	}
+
+	public static execLine({ message, iteration }) {
+		const msg = eval(
+			`'use strict'; const index=${iteration}; const api=${ExecutionApi}; ${message}`
 		);
 
 		return msg;

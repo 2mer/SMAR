@@ -8,13 +8,20 @@ export function executionIPC() {
 		'START_SCRIPT',
 		async (
 			event,
-			{ message = '', startDelay = 0, messageDelay = 0, amount = -1 }
+			{
+				message = '',
+				startDelay = 0,
+				messageInterval = 0,
+				amount = -1,
+				execMode = false,
+			}
 		) => {
 			const [promise, abort] = ExecutionApi.executeScript({
 				message,
 				startDelay,
-				messageDelay,
+				messageInterval,
 				amount,
+				execMode,
 			});
 
 			currentScriptAbort = abort;

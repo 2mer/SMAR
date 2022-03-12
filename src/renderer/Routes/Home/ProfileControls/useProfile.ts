@@ -7,7 +7,10 @@ export default function useProfile() {
 
 	if (!isSuccess) return null;
 
-	return settings?.profiles?.find((p) => p.id === settings?.selectedProfile);
+	return (
+		settings?.profiles?.find((p) => p.id === settings?.selectedProfile) ||
+		settings?.profiles?.[0]
+	);
 }
 
 export function useProfileMutation(options = {}) {

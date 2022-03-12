@@ -9,13 +9,15 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, globalShortcut } from 'electron';
+import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { setupIPC } from './ipc';
-import ExecutionApi from './Execution/ExecutionApi';
+import { windowIPC } from './Services/WindowIPC';
+import { readSettings } from './bl/SettingsBL';
+import setupGlobalShortcuts from './useGlobalShortcuts';
 
 export default class AppUpdater {
 	constructor() {
@@ -67,6 +69,8 @@ const createWindow = async () => {
 		return path.join(RESOURCES_PATH, ...paths);
 	};
 
+	const settings = await readSettings();
+
 	mainWindow = new BrowserWindow({
 		show: false,
 		width: 1024,
@@ -78,6 +82,12 @@ const createWindow = async () => {
 			contextIsolation: false,
 		},
 	});
+
+	mainWindow.setAlwaysOnTop(
+		Boolean(settings?.config?.alwaysOnTop),
+		'pop-up-menu',
+		6
+	);
 
 	mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -105,6 +115,20 @@ const createWindow = async () => {
 		return { action: 'deny' };
 	});
 
+	windowIPC(mainWindow);
+
+	let shortcutCleanup = undefined as any;
+
+	ipcMain.on('SHORTCUT_CHANGED', () => {
+		if (shortcutCleanup) shortcutCleanup();
+
+		console.log('shortcut changed');
+
+		shortcutCleanup = setupGlobalShortcuts(mainWindow);
+	});
+
+	shortcutCleanup = setupGlobalShortcuts(mainWindow);
+
 	// Remove this if your app does not use auto updates
 	// eslint-disable-next-line
   new AppUpdater();
@@ -130,15 +154,6 @@ app.whenReady()
 			// dock icon is clicked and there are no other windows open.
 			if (mainWindow === null) createWindow();
 		});
-
-		// register global hotkeys
-		const ret = globalShortcut.register('Super+Alt+S', () => {
-			console.log('Super+Alt+S is pressed');
-		});
-
-		if (!ret) {
-			console.log('Global hotkey registration failed');
-		}
 	})
 	.catch(console.log);
 

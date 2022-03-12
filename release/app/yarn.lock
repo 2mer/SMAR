@@ -182,7 +182,7 @@ mkdirp-classic@^0.5.2, mkdirp-classic@^0.5.3:
   resolved "https://registry.yarnpkg.com/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz#fa10c9115cc6d8865be221ba47ee9bed78601113"
   integrity sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==
 
-nan@^2.14.0:
+nan@^2.14.2:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
@@ -192,7 +192,7 @@ napi-build-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/napi-build-utils/-/napi-build-utils-1.0.2.tgz#b1fddc0b2c46e380a0b7a76f984dd47c41a13806"
   integrity sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==
 
-node-abi@^2.13.0, node-abi@^2.7.0:
+node-abi@^2.7.0:
   version "2.30.1"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.30.1.tgz#c437d4b1fe0e285aaf290d45b45d4d7afedac4cf"
   integrity sha512-/2D0wOQPgaUWzVSVgRMx+trKJRC2UG4SUc4oCJoXx9Uxjtp0Vy3/kt7zcbxHF8+Z/pK3UloLWzBISg72brfy1w==
@@ -297,13 +297,11 @@ readable-stream@^3.1.1, readable-stream@^3.4.0:
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
 
-robotjs@^0.6.0:
+"robotjs@git+https://github.com/octalmage/robotjs.git":
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/robotjs/-/robotjs-0.6.0.tgz#8d1f63221f5b18dc496c7768f75261043891f64a"
-  integrity sha512-6pRWI3d+CBZqCXT/rsJfabbZoELua+jTeXilG27F8Jvix/J2BYZ0O7Tly2WCmXyqw5xYdCvOwvCeLRHEtXkt4w==
+  resolved "git+https://github.com/octalmage/robotjs.git#8ae87a91f06f49559f0db387bc2bd1ea01419880"
   dependencies:
-    nan "^2.14.0"
-    node-abi "^2.13.0"
+    nan "^2.14.2"
     prebuild-install "^5.3.3"
 
 safe-buffer@^5.0.1, safe-buffer@~5.2.0:
