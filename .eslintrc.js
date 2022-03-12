@@ -14,6 +14,7 @@ module.exports = {
 		'no-async-promise-executor': 'off',
 		'no-await-in-loop': 'off',
 		'no-eval': 'off',
+		'react-hooks/exhaustive-deps': 'off',
 	},
 	parserOptions: {
 		ecmaVersion: 2020,

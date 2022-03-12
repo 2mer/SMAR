@@ -22,6 +22,8 @@ export function settingsIPC() {
 
 		if (settingsExist) {
 			data = await fsPromises.readFile(settingsPath);
+
+			data = JSON.parse(data as any);
 		}
 
 		return data;

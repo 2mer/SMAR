@@ -9,12 +9,12 @@ class ExecutionApi {
 		clipboard.writeText(msg);
 
 		if (doubleEnter) {
-			robot.keyTap('Enter');
+			robot.keyTap('enter');
 		}
 
 		ExecutionApi.simulatePaste();
 
-		robot.keyTap('Enter');
+		robot.keyTap('enter');
 	}
 
 	public static setKeyboardDelay(msg: string) {
@@ -22,7 +22,7 @@ class ExecutionApi {
 	}
 
 	public static simulatePaste() {
-		robot.keyTap('c', 'control');
+		robot.keyTap('v', 'control');
 	}
 
 	public static async sleep(ms: number) {
@@ -34,10 +34,10 @@ class ExecutionApi {
 		return promise;
 	}
 
-	public static async executeScript({
+	public static executeScript({
 		message,
-		iterations = 0,
-		initialDelay = 0,
+		amount = 0,
+		startDelay = 0,
 		messageDelay = 1000,
 	}) {
 		let running = true;
@@ -56,16 +56,16 @@ class ExecutionApi {
 				);
 			};
 
-			await ExecutionApi.sleep(initialDelay);
+			await ExecutionApi.sleep(startDelay);
 
-			if (iterations === -1) {
+			if (amount === -1) {
 				while (running) {
 					smg();
 					iteration++;
 					await ExecutionApi.sleep(messageDelay);
 				}
 			} else {
-				for (let i = 0; i < iterations && running; i++) {
+				for (let i = 0; i < amount && running; i++) {
 					smg();
 					iteration++;
 					await ExecutionApi.sleep(messageDelay);
@@ -77,7 +77,9 @@ class ExecutionApi {
 	}
 
 	public static constructMessage({ message, iteration }) {
-		const msg = eval(`'use strict'; index=${iteration}; \`${message}\``);
+		const msg = eval(
+			`'use strict'; const index=${iteration}; \`${message}\``
+		);
 
 		return msg;
 	}
