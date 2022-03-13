@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import ExecutionApi from '../Execution/ExecutionApi';
+import { executeScript } from '../Execution/ExecutionApi';
 
 export function executionIPC() {
 	let currentScriptAbort = null as any;
@@ -16,7 +16,7 @@ export function executionIPC() {
 				execMode = false,
 			}
 		) => {
-			const [promise, abort] = ExecutionApi.executeScript({
+			const [promise, abort] = executeScript({
 				message,
 				startDelay,
 				messageInterval,

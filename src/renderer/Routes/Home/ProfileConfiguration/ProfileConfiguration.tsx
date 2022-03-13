@@ -12,19 +12,19 @@ import {
 	Divider,
 	IconButton,
 	Paper,
-	TextField,
 	Tooltip,
 	Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useState } from 'react';
+import { memo, useState } from 'react';
+import SyncTextField from 'renderer/components/SyncTextField';
 import useIPC from 'renderer/hooks/useIPC';
 import { abortScript, startScript } from '../Controls/ExecutionService';
 import NewProfileModal from '../NewProfileModal/NewProfileModal';
 import useProfile, { useProfileMutation } from '../ProfileControls/useProfile';
 import useSettings from '../Settings/useSettings';
 
-export default function ProfileConfiguration() {
+function ProfileConfiguration() {
 	const { isSuccess, data: settings } = useSettings();
 
 	const [progress, setProgress] = useState(null as any);
@@ -58,7 +58,6 @@ export default function ProfileConfiguration() {
 	useIPC(
 		'SCRIPT_TOGGLE_HOTKEY_PRESSED',
 		(event, hotkey) => {
-			console.log('hey', hotkey);
 			const foundProfile = settings?.profiles?.find(
 				(p) => p.hotkey === hotkey
 			);
@@ -121,7 +120,7 @@ export default function ProfileConfiguration() {
 				justifyContent="space-between"
 			>
 				<Box display="flex" gap="1rem">
-					<TextField
+					<SyncTextField
 						InputProps={{
 							startAdornment: (
 								<Tooltip title="Amount">
@@ -133,17 +132,17 @@ export default function ProfileConfiguration() {
 						size="small"
 						disabled={running}
 						value={profile?.config?.amount || ''}
-						onChange={(e) =>
+						onChange={(value) =>
 							profileMutation.mutate({
 								...profile,
 								config: {
 									...(profile?.config || {}),
-									amount: e.target.value,
+									amount: value,
 								},
 							})
 						}
 					/>
-					<TextField
+					<SyncTextField
 						size="small"
 						label="Message Interval"
 						inputProps={{
@@ -156,12 +155,12 @@ export default function ProfileConfiguration() {
 								...profile,
 								config: {
 									...(profile?.config || {}),
-									messageInterval: e.target.value,
+									messageInterval: e,
 								},
 							})
 						}
 					/>
-					<TextField
+					<SyncTextField
 						size="small"
 						label="Start Delay"
 						inputProps={{
@@ -169,12 +168,12 @@ export default function ProfileConfiguration() {
 							pattern: '[0-9]*',
 						}}
 						value={profile?.config?.startDelay || ''}
-						onChange={(e) =>
+						onChange={(value) =>
 							profileMutation.mutate({
 								...profile,
 								config: {
 									...(profile?.config || {}),
-									startDelay: e.target.value,
+									startDelay: value,
 								},
 							})
 						}
@@ -207,7 +206,7 @@ export default function ProfileConfiguration() {
 			{/* messaging actions */}
 			<Divider />
 			<Box p="1rem" display="flex" gap="1rem">
-				<TextField
+				<SyncTextField
 					multiline
 					fullWidth
 					disabled={running}
@@ -218,7 +217,7 @@ export default function ProfileConfiguration() {
 							...profile,
 							config: {
 								...(profile?.config || {}),
-								message: e.target.value,
+								message: e,
 							},
 						})
 					}
@@ -281,3 +280,5 @@ export default function ProfileConfiguration() {
 		</Paper>
 	);
 }
+
+export default memo(ProfileConfiguration);

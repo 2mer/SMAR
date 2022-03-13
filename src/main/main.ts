@@ -12,7 +12,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
+// import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { setupIPC } from './ipc';
 import { windowIPC } from './Services/WindowIPC';
@@ -73,8 +73,8 @@ const createWindow = async () => {
 
 	mainWindow = new BrowserWindow({
 		show: false,
-		width: 1024,
-		height: 728,
+		width: 900,
+		height: 600,
 		icon: getAssetPath('icon.png'),
 		webPreferences: {
 			// preload: path.join(__dirname, 'preload.js'),
@@ -106,8 +106,9 @@ const createWindow = async () => {
 		mainWindow = null;
 	});
 
-	const menuBuilder = new MenuBuilder(mainWindow);
-	menuBuilder.buildMenu();
+	// const menuBuilder = new MenuBuilder(mainWindow);
+	// menuBuilder.buildMenu();
+	mainWindow.setMenu(null);
 
 	// Open urls in the user's browser
 	mainWindow.webContents.setWindowOpenHandler((edata) => {

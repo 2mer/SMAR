@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { memo } from 'react';
 import ProfileControls from './ProfileControls/ProfileControls';
 import ProfileConfiguration from './ProfileConfiguration/ProfileConfiguration';
 import Settings from './Settings/Settings';
@@ -20,4 +21,4 @@ function Home() {
 	);
 }
 
-export default Home;
+export default memo(Home);

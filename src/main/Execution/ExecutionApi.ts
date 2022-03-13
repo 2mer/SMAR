@@ -1,9 +1,16 @@
 import { clipboard } from 'electron';
 
+const fs = require('fs');
+
 const robot = require('robotjs');
 
-class ExecutionApi {
+class ExposedApi {
 	public static robot = robot;
+
+	public static runFile(path) {
+		const fileData = fs.readFileSync(path, 'utf8');
+		return eval(fileData);
+	}
 
 	public static sendMessage(msg: string, { doubleEnter = false }) {
 		clipboard.writeText(msg);
@@ -12,7 +19,7 @@ class ExecutionApi {
 			robot.keyTap('enter');
 		}
 
-		ExecutionApi.simulatePaste();
+		ExposedApi.simulatePaste();
 
 		robot.keyTap('enter');
 	}
@@ -41,73 +48,77 @@ class ExecutionApi {
 
 		return promise;
 	}
+}
 
-	public static executeScript({
-		message,
-		amount = 0,
-		startDelay = 0,
-		messageInterval = 0,
-		execMode = true,
-	}) {
-		let running = true;
+export function constructMessage({ message, iteration }) {
+	const msg = eval(
+		`'use strict'; const index=${iteration}; const api=${ExposedApi}; \`${message}\``
+	);
 
-		const abort = () => {
-			running = false;
-		};
+	return msg;
+}
 
-		ExecutionApi.robot.setKeyboardDelay(10);
+export function execLine({ message, iteration }) {
+	const msg = eval(
+		`'use strict'; const index=${iteration}; const api=${ExposedApi}; ${message}`
+	);
 
-		const runnable = new Promise(async (resolve) => {
+	return msg;
+}
+
+export function executeScript({
+	message,
+	amount = 0,
+	startDelay = 0,
+	messageInterval = 0,
+	execMode = true,
+}) {
+	let running = true;
+
+	const abort = () => {
+		running = false;
+	};
+
+	ExposedApi.robot.setKeyboardDelay(10);
+
+	const runnable = new Promise(async (resolve, reject) => {
+		try {
 			let iteration = 0;
 
 			const smg = () => {
 				if (execMode) {
-					ExecutionApi.execLine({ message, iteration });
+					execLine({ message, iteration });
 				} else {
-					this.sendMessage(
-						ExecutionApi.constructMessage({ message, iteration }),
+					ExposedApi.sendMessage(
+						constructMessage({ message, iteration }),
 						{}
 					);
 				}
 			};
 
-			await ExecutionApi.sleep(startDelay);
+			await ExposedApi.sleep(startDelay);
 
 			if (amount === -1) {
 				while (running) {
 					smg();
 					iteration++;
-					await ExecutionApi.sleep(messageInterval);
+					await ExposedApi.sleep(messageInterval);
 				}
 			} else {
 				for (let i = 0; i < amount && running; i++) {
 					smg();
 					iteration++;
-					await ExecutionApi.sleep(messageInterval);
+					await ExposedApi.sleep(messageInterval);
 				}
 			}
 
 			resolve('done');
-		});
+		} catch (err) {
+			reject(err);
+		}
+	});
 
-		return [runnable, abort];
-	}
-
-	public static constructMessage({ message, iteration }) {
-		const msg = eval(
-			`'use strict'; const index=${iteration}; const api=${ExecutionApi}; \`${message}\``
-		);
-
-		return msg;
-	}
-
-	public static execLine({ message, iteration }) {
-		const msg = eval(
-			`'use strict'; const index=${iteration}; const api=${ExecutionApi}; ${message}`
-		);
-
-		return msg;
-	}
+	return [runnable, abort];
 }
 
-export default ExecutionApi;
+export default ExposedApi;

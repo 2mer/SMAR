@@ -1,9 +1,10 @@
 import { PushPin, PushPinOutlined } from '@mui/icons-material';
 import { Box, IconButton, Paper, Tooltip } from '@mui/material';
 import { ipcRenderer } from 'electron';
+import { memo } from 'react';
 import useSettings, { useSettingsMutation } from './useSettings';
 
-export default function Settings() {
+function Settings() {
 	const { data: settings, isSuccess } = useSettings();
 
 	const mutateSettings = useSettingsMutation();
@@ -53,3 +54,5 @@ export default function Settings() {
 		</Paper>
 	);
 }
+
+export default memo(Settings);

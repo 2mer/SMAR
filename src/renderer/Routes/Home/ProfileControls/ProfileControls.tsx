@@ -10,13 +10,13 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import DeleteModal from '../DeleteModal/DeleteModal';
 import NewProfileModal from '../NewProfileModal/NewProfileModal';
 import useSettings, { useSettingsMutation } from '../Settings/useSettings';
 import useProfile from './useProfile';
 
-export default function ProfileControls() {
+function ProfileControls() {
 	const { data: settings, isSuccess } = useSettings();
 	const profiles = settings?.profiles || [];
 	const selectedProfile = useProfile();
@@ -47,13 +47,25 @@ export default function ProfileControls() {
 							size="small"
 							style={{
 								width: '300px',
-								display: 'flex',
-								alignItems: 'center',
 							}}
 							value={selectedProfile?.id || ''}
 							onChange={(e) =>
 								handleSelectProfile(e.target.value)
 							}
+							renderValue={() => (
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									alignItems="center"
+								>
+									<ListItemText>
+										{selectedProfile?.name}
+									</ListItemText>
+									<Typography color="textSecondary">
+										{selectedProfile?.hotkey}
+									</Typography>
+								</Box>
+							)}
 						>
 							{profiles.map((p) => (
 								<MenuItem key={p.id} value={p.id}>
@@ -124,3 +136,5 @@ export default function ProfileControls() {
 		</>
 	);
 }
+
+export default memo(ProfileControls);
