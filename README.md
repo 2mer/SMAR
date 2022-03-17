@@ -8,3 +8,8 @@ invokable via global hotkeys - with gravitation towards creating automatic and s
 ## Exec Mode API
 
 See ExecutionAPI
+
+## Releasing a version
+
+-   bump version in release/app/package.json
+-   run yarn package

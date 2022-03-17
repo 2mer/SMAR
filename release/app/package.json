@@ -1,6 +1,6 @@
 {
 	"name": "smar",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Spam me a river",
 	"main": "./dist/main/main.js",
 	"author": {

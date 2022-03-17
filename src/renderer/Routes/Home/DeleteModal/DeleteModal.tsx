@@ -39,7 +39,7 @@ export default function DeleteModal({
 			<DialogContent>
 				Are you sure you want to delete this profile?
 				<Paper>
-					<Box p="1rem">{profile.name}</Box>
+					<Box p="1rem">{profile?.name}</Box>
 				</Paper>
 			</DialogContent>
 			<DialogActions>
