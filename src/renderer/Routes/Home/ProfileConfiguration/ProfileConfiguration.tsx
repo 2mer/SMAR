@@ -1,77 +1,33 @@
-import {
-	Add,
-	AllInclusive,
-	Code,
-	Numbers,
-	Send,
-	Stop,
-} from '@mui/icons-material';
-import {
-	Button,
-	CircularProgress,
-	Divider,
-	IconButton,
-	Paper,
-	Tooltip,
-	Typography,
-} from '@mui/material';
+import { Add, AddLink } from '@mui/icons-material';
+import { alpha, Button, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { memo, useState } from 'react';
-import SyncTextField from 'renderer/components/SyncTextField';
-import useIPC from 'renderer/hooks/useIPC';
-import { abortScript, startScript } from '../Controls/ExecutionService';
+import DynamicUIComponent from 'renderer/components/DynamicUI/DynamicUIComponent';
+import queryClient from 'renderer/queryClient';
 import NewProfileModal from '../NewProfileModal/NewProfileModal';
-import useProfile, { useProfileMutation } from '../ProfileControls/useProfile';
+import NewScriptModal from '../NewScriptModal/NewScriptModal';
+import useProfile from '../ProfileControls/useProfile';
+import useScript from '../ProfileControls/useScript';
+import { linkProfileToScript } from '../Service/ScriptsService';
 import useSettings from '../Settings/useSettings';
 
-function ProfileConfiguration() {
-	const { isSuccess, data: settings } = useSettings();
+function ProfileConfiguration({ running }) {
+	const { isSuccess } = useSettings();
 
-	const [progress, setProgress] = useState(null as any);
-	const [running, setRunning] = useState(false);
 	const [newProfileModalOpen, setNewProfileModalOpen] = useState(false);
+	const [newScriptModalOpen, setNewScriptModalOpen] = useState(false);
 
 	const profile = useProfile();
-	const profileMutation = useProfileMutation();
 
-	const handleStartClicked = (p) => {
-		if (!running) {
-			setRunning(true);
-			startScript(p?.config)
-				.then(() => {
-					setRunning(false);
-				})
-				.catch((err) => {
-					alert(err);
-					setRunning(false);
-				});
-		} else {
-			abortScript();
-			setRunning(false);
-		}
+	const { data: script, isSuccess: scriptSuccess } = useScript();
+
+	const handleConnectScript = () => {
+		linkProfileToScript(profile.id)
+			.then(() => {
+				queryClient.invalidateQueries('script');
+			})
+			.catch(alert);
 	};
-
-	useIPC('SCRIPT_PROGRESS_CHANGED', (e, data) => {
-		setProgress(data);
-	});
-
-	useIPC(
-		'SCRIPT_TOGGLE_HOTKEY_PRESSED',
-		(event, hotkey) => {
-			const foundProfile = settings?.profiles?.find(
-				(p) => p.hotkey === hotkey
-			);
-
-			if (foundProfile) {
-				handleStartClicked(foundProfile);
-			}
-		},
-		[handleStartClicked]
-	);
-
-	const { step, maxSteps } = progress || {};
-
-	const endlessMode = maxSteps === -1;
 
 	if (!isSuccess) return null;
 	if (!profile)
@@ -111,173 +67,92 @@ function ProfileConfiguration() {
 			</>
 		);
 
-	return (
-		<Paper>
-			<Box
-				p="1rem"
-				display="flex"
-				gap="1rem"
-				justifyContent="space-between"
-			>
-				<Box display="flex" gap="1rem">
-					<SyncTextField
-						InputProps={{
-							startAdornment: (
-								<Tooltip title="Amount">
-									<Numbers />
-								</Tooltip>
-							),
-						}}
-						label="Amount"
-						size="small"
-						disabled={running}
-						value={profile?.config?.amount || ''}
-						onChange={(value) =>
-							profileMutation.mutate({
-								...profile,
-								config: {
-									...(profile?.config || {}),
-									amount: value,
-								},
-							})
-						}
-					/>
-					<SyncTextField
-						size="small"
-						label="Message Interval"
-						inputProps={{
-							inputMode: 'numeric',
-							pattern: '[0-9]*',
-						}}
-						value={profile?.config?.messageInterval || ''}
-						onChange={(e) =>
-							profileMutation.mutate({
-								...profile,
-								config: {
-									...(profile?.config || {}),
-									messageInterval: e,
-								},
-							})
-						}
-					/>
-					<SyncTextField
-						size="small"
-						label="Start Delay"
-						inputProps={{
-							inputMode: 'numeric',
-							pattern: '[0-9]*',
-						}}
-						value={profile?.config?.startDelay || ''}
-						onChange={(value) =>
-							profileMutation.mutate({
-								...profile,
-								config: {
-									...(profile?.config || {}),
-									startDelay: value,
-								},
-							})
-						}
-					/>
-				</Box>
-				<Tooltip title="Exec mode">
-					<span>
-						<IconButton
-							color={
-								profile?.config?.execMode
-									? 'primary'
-									: undefined
-							}
-							onClick={() => {
-								profileMutation.mutate({
-									...profile,
-									config: {
-										...(profile?.config || {}),
-										execMode: !profile?.config?.execMode,
-									},
-								});
-							}}
-						>
-							<Code />
-						</IconButton>
-					</span>
-				</Tooltip>
-			</Box>
-
-			{/* messaging actions */}
-			<Divider />
-			<Box p="1rem" display="flex" gap="1rem">
-				<SyncTextField
-					multiline
-					fullWidth
-					disabled={running}
-					label="Message"
-					value={profile?.config?.message || ''}
-					onChange={(e) =>
-						profileMutation.mutate({
-							...profile,
-							config: {
-								...(profile?.config || {}),
-								message: e,
-							},
-						})
-					}
-				/>
-				<Box
-					display="flex"
-					alignItems="center"
-					gap="1rem"
-					minWidth="200px"
-					justifyContent="flex-end"
-				>
-					{running && (
+	if (!scriptSuccess) {
+		return (
+			<>
+				<Paper>
+					<Box
+						p="1rem"
+						display="flex"
+						gap="1rem"
+						justifyContent="center"
+					>
 						<Box
 							display="flex"
 							alignItems="center"
-							justifyContent="center"
-							position="relative"
-							height="100%"
+							flexDirection="column"
+							gap="1rem"
 						>
-							<CircularProgress
-								variant={
-									endlessMode
-										? 'indeterminate'
-										: 'determinate'
-								}
-								color="primary"
-								value={(maxSteps - step) / maxSteps}
-							/>
+							<Typography>
+								Profile has no associated script
+							</Typography>
 							<Box
-								position="absolute"
-								top="0"
-								left="0"
-								width="100%"
-								height="100%"
 								display="flex"
-								alignItems="center"
+								gap="1rem"
 								justifyContent="center"
 							>
-								{endlessMode ? (
-									<AllInclusive />
-								) : (
-									<Typography>
-										{maxSteps - step || '...'}
-									</Typography>
-								)}
+								<Button
+									color="primary"
+									variant="contained"
+									startIcon={<AddLink />}
+									onClick={handleConnectScript}
+								>
+									CONNECT SCRIPT
+								</Button>
+								<Button
+									color="primary"
+									variant="contained"
+									startIcon={<Add />}
+									onClick={() => setNewScriptModalOpen(true)}
+								>
+									CREATE SCRIPT
+								</Button>
 							</Box>
 						</Box>
-					)}
-					<Button
-						variant="contained"
-						disableElevation
-						color={running ? 'error' : 'primary'}
-						sx={{ height: '100%' }}
-						onClick={() => handleStartClicked(profile)}
-					>
-						{running ? <Stop /> : <Send />}
-					</Button>
-				</Box>
+					</Box>
+				</Paper>
+				<NewScriptModal
+					profile={profile}
+					open={newScriptModalOpen}
+					onClose={() => setNewScriptModalOpen(false)}
+				/>
+			</>
+		);
+	}
+
+	const hasParameters = script?.parameters?.length;
+
+	if (!hasParameters) {
+		return (
+			<Box
+				border={`3px dashed ${alpha('#ffffff', 0.2)}`}
+				color={alpha('#ffffff', 0.4)}
+				display="flex"
+				alignItems="center"
+				justifyContent="center"
+				borderRadius="4px"
+				p="1rem"
+				style={{
+					backdropFilter: 'blur(40px)',
+				}}
+				flex={1}
+			>
+				No parameters exposed for tweaking
 			</Box>
-		</Paper>
+		);
+	}
+
+	return (
+		<Box display="flex" flex={1} gap="1rem" flexDirection="column">
+			{script?.parameters?.map((p, index) => (
+				<DynamicUIComponent
+					// eslint-disable-next-line react/no-array-index-key
+					key={index}
+					parameter={p}
+					disabled={running}
+				/>
+			))}
+		</Box>
 	);
 }
 

@@ -1,12 +1,15 @@
 import { Box } from '@mui/material';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import ProfileControls from './ProfileControls/ProfileControls';
 import ProfileConfiguration from './ProfileConfiguration/ProfileConfiguration';
 import Settings from './Settings/Settings';
+import ScriptControls from './ScriptControls/ScriptControls';
 
 function Home() {
+	const [running, setRunning] = useState(false);
+
 	return (
-		<Box display="flex" flexDirection="column" gap="2rem">
+		<Box display="flex" flexDirection="column" gap="2rem" height="100%">
 			<Box display="flex" gap="2rem">
 				{/* Profile configuration */}
 				<ProfileControls />
@@ -15,8 +18,12 @@ function Home() {
 				<Settings />
 			</Box>
 
-			{/* Message + execution controls */}
-			<ProfileConfiguration />
+			<Box display="flex" width="100%" flex={1} gap="2rem">
+				{/* Script + execution controls */}
+				<ScriptControls running={running} setRunning={setRunning} />
+				{/* Profile configuration */}
+				<ProfileConfiguration running={running} />
+			</Box>
 		</Box>
 	);
 }

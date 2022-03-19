@@ -1,8 +1,9 @@
 import { Box, Typography } from '@mui/material';
+import Stats from './Routes/Home/Stats/Stats';
 
 function AppContent({ children }) {
 	return (
-		<Box p="1rem" display="flex" flexDirection="column">
+		<Box p="2rem" display="flex" flexDirection="column" height="100%">
 			<Box p="2rem 0 4rem" display="flex" justifyContent="space-between">
 				<Box display="flex" gap="1rem" alignItems="center">
 					<Box mr="-20px" display="flex" flexDirection="column">
@@ -24,13 +25,10 @@ function AppContent({ children }) {
 					<Typography variant="h2">🌊</Typography>
 				</Box>
 				{/* Statistics */}
-				<Box>
-					{/* <Typography align="right">v1.0.0</Typography>
-					<Typography align="right">Spammed 0 Messages</Typography> */}
-				</Box>
+				<Stats />
 			</Box>
 			{children}
-			<Box
+			{/* <Box
 				position="absolute"
 				top="0"
 				bottom="0"
@@ -67,7 +65,7 @@ function AppContent({ children }) {
 						}}
 					/>
 				</Box>
-			</Box>
+			</Box> */}
 		</Box>
 	);
 }

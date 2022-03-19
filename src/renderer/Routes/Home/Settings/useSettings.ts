@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { readSettings, saveSettings } from './SettingsService';
+import { readSettings, saveSettings } from '../Service/SettingsService';
 
 export default function useSettings(options = {}) {
 	return useQuery('settings', readSettings, options);

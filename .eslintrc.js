@@ -15,6 +15,7 @@ module.exports = {
 		'no-await-in-loop': 'off',
 		'no-eval': 'off',
 		'react-hooks/exhaustive-deps': 'off',
+		'react/jsx-props-no-spreading': 'off',
 	},
 	parserOptions: {
 		ecmaVersion: 2020,

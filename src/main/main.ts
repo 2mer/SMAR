@@ -9,23 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
-// import MenuBuilder from './menu';
+import { app, BrowserWindow, shell, globalShortcut, ipcMain } from 'electron'; // import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { setupIPC } from './ipc';
-import { windowIPC } from './Services/WindowIPC';
+import { setupIPC } from './ipc/ipc';
+import { windowIPC } from './ipc/WindowIPC';
 import { readSettings } from './bl/SettingsBL';
 import setupGlobalShortcuts from './useGlobalShortcuts';
-
-export default class AppUpdater {
-	constructor() {
-		log.transports.file.level = 'info';
-		autoUpdater.logger = log;
-		autoUpdater.checkForUpdatesAndNotify();
-	}
-}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -129,10 +118,6 @@ const createWindow = async () => {
 	});
 
 	shortcutCleanup = setupGlobalShortcuts(mainWindow);
-
-	// Remove this if your app does not use auto updates
-	// eslint-disable-next-line
-  new AppUpdater();
 };
 
 /**

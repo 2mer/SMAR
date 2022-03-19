@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { saveSettings } from '../Settings/SettingsService';
+import { saveSettings } from '../Service/SettingsService';
 import useSettings from '../Settings/useSettings';
 
 export default function useProfile() {
