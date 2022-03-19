@@ -40,6 +40,7 @@ function ProfileControls() {
 					display="flex"
 					justifyContent="space-between"
 					alignItems="center"
+					gap="4px"
 				>
 					<Box display="flex" alignItems="center" gap="8px">
 						{/* profile select */}
@@ -115,7 +116,7 @@ function ProfileControls() {
 							setAddMode(true);
 						}}
 					>
-						NEW PROFILE
+						PROFILE
 					</Button>
 				</Box>
 			</Paper>

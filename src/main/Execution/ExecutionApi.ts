@@ -1,9 +1,4 @@
 import ExposedApi from './ExposedApi';
-import tempRequire, { clearTempRequireCache } from './tempRequire';
-
-const SCRIPT_REQUIRE_PARTITION = 'script';
-global.scriptRequire = (file) => tempRequire(SCRIPT_REQUIRE_PARTITION, file);
-const scriptCleanup = () => clearTempRequireCache(SCRIPT_REQUIRE_PARTITION);
 
 export function executeScript(script, parameters) {
 	ExposedApi.running = true;
@@ -20,10 +15,8 @@ export function executeScript(script, parameters) {
 
 			await scriptFunction(ExposedApi, parameters);
 
-			scriptCleanup();
 			resolve('done');
 		} catch (err) {
-			scriptCleanup();
 			reject(err);
 		}
 	});

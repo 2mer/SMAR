@@ -1,22 +1,30 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Divider, Paper, Typography } from '@mui/material';
 import DynamicCheckbox from './DynamicCheckbox';
 import DynamicChipField from './DynamicChipField';
 import DynamicTextfield from './DynamicTextfield';
 import getDisplayName from './getDisplayName';
 
-export default function DynamicUIComponent({ parameter, ...rest }) {
+export default function DynamicUIComponent({
+	parameter,
+	direction: prevDirection,
+	...rest
+}) {
 	const isArray = Array.isArray(parameter);
 
 	if (isArray) {
 		const [meta, ...items] = parameter;
 		const [name, direction] = meta.split(':');
 
-		const render = (
+		let render = (
 			<Box display="flex" flexDirection={direction} gap="1rem">
 				{items.map((item, index) => (
-					// eslint-disable-next-line react/no-array-index-key
-					<DynamicUIComponent key={index} parameter={item} />
+					<DynamicUIComponent
+						// eslint-disable-next-line react/no-array-index-key
+						key={index}
+						parameter={item}
+						direction={direction}
+					/>
 				))}
 			</Box>
 		);
@@ -24,8 +32,8 @@ export default function DynamicUIComponent({ parameter, ...rest }) {
 		if (name) {
 			const displayName = getDisplayName(name);
 
-			return (
-				<Paper>
+			render = (
+				<>
 					<Box
 						p="1rem"
 						display="flex"
@@ -37,7 +45,18 @@ export default function DynamicUIComponent({ parameter, ...rest }) {
 						</Typography>
 						{render}
 					</Box>
-				</Paper>
+				</>
+			);
+		}
+
+		if (prevDirection) {
+			render = <Paper variant="outlined">{render}</Paper>;
+		} else {
+			render = (
+				<>
+					<Divider />
+					{render}
+				</>
 			);
 		}
 

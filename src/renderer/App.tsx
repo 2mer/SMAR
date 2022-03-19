@@ -5,6 +5,7 @@ import AppContent from './AppContent';
 import queryClient from './queryClient';
 import Home from './Routes/Home/Home';
 import darkTheme from './Theme';
+import './App.css';
 
 export default function App() {
 	return (

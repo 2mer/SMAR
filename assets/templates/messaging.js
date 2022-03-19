@@ -1,3 +1,5 @@
+module.smar = 'v1';
+
 module.exports = {
 	parameters: [
 		[

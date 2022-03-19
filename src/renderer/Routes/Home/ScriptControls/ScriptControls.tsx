@@ -1,13 +1,5 @@
 import { Edit, FileOpen, InsertDriveFile } from '@mui/icons-material';
-import {
-	alpha,
-	Box,
-	Divider,
-	IconButton,
-	Paper,
-	Tooltip,
-	Typography,
-} from '@mui/material';
+import { alpha, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import queryClient from 'renderer/queryClient';
 import ExecutionControls from '../ExecutionControls/ExecutionControls';
@@ -40,67 +32,63 @@ export default function ScriptControls({ running, setRunning }) {
 	};
 
 	return (
-		<Paper sx={{ height: 'fit-content' }}>
-			<Box display="flex" flexDirection="column">
-				<Box flex={1}>
-					<Box p="1rem" display="flex" gap="4px">
-						<Tooltip title={profile?.script || ''}>
-							<Box
-								display="flex"
-								gap="8px"
-								bgcolor={alpha('#ffffff', 0.05)}
-								alignItems="center"
-								borderRadius="4px"
-								p="4px"
-							>
-								<InsertDriveFile />
-								<Typography
-									style={{
-										whiteSpace: 'nowrap',
-										overflow: 'hidden',
-										textOverflow: 'ellipsis',
-										width: '200px',
+		<Box display="flex" flexDirection="column">
+			<Box
+				p="1rem"
+				flex={1}
+				display="flex"
+				justifyContent="space-between"
+			>
+				<Box display="flex" gap="4px">
+					<Tooltip title={profile?.script || ''}>
+						<Box
+							display="flex"
+							gap="8px"
+							bgcolor={alpha('#ffffff', 0.05)}
+							alignItems="center"
+							borderRadius="4px"
+							p="4px"
+						>
+							<InsertDriveFile />
+							<Typography
+								style={{
+									whiteSpace: 'nowrap',
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									width: '200px',
 
-										/* Beginning of string */
-										direction: 'rtl',
-										textAlign: 'left',
-									}}
-									color="primary"
-								>
-									{scriptName}
-								</Typography>
-							</Box>
-						</Tooltip>
-						<Box display="flex">
-							<Tooltip title="Edit Script">
-								<span>
-									<IconButton onClick={handleEdit}>
-										<Edit />
-									</IconButton>
-								</span>
-							</Tooltip>
-							<Tooltip title="Change Script">
-								<span>
-									<IconButton
-										disabled={!hasScript}
-										onClick={handleConnectScript}
-									>
-										<FileOpen />
-									</IconButton>
-								</span>
-							</Tooltip>
+									/* Beginning of string */
+									direction: 'rtl',
+									textAlign: 'left',
+								}}
+								color="primary"
+							>
+								{scriptName}
+							</Typography>
 						</Box>
+					</Tooltip>
+					<Box display="flex">
+						<Tooltip title="Edit Script">
+							<span>
+								<IconButton onClick={handleEdit}>
+									<Edit />
+								</IconButton>
+							</span>
+						</Tooltip>
+						<Tooltip title="Change Script">
+							<span>
+								<IconButton
+									disabled={!hasScript}
+									onClick={handleConnectScript}
+								>
+									<FileOpen />
+								</IconButton>
+							</span>
+						</Tooltip>
 					</Box>
 				</Box>
-
-				<Divider />
-				<Box p="1rem">
-					<ExecutionControls
-						running={running}
-						setRunning={setRunning}
-					/>
-				</Box>
+				<ExecutionControls running={running} setRunning={setRunning} />
 			</Box>
-		</Paper>
+		</Box>
 	);
 }

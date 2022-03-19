@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Divider, Paper } from '@mui/material';
 import { memo, useState } from 'react';
 import ProfileControls from './ProfileControls/ProfileControls';
 import ProfileConfiguration from './ProfileConfiguration/ProfileConfiguration';
@@ -19,10 +19,13 @@ function Home() {
 			</Box>
 
 			<Box display="flex" width="100%" flex={1} gap="2rem">
-				{/* Script + execution controls */}
-				<ScriptControls running={running} setRunning={setRunning} />
-				{/* Profile configuration */}
-				<ProfileConfiguration running={running} />
+				<Paper sx={{ mb: '2rem' }}>
+					{/* Script + execution controls */}
+					<ScriptControls running={running} setRunning={setRunning} />
+					<Divider />
+					{/* Profile configuration */}
+					<ProfileConfiguration running={running} />
+				</Paper>
 			</Box>
 		</Box>
 	);

@@ -2,7 +2,7 @@ import { app, shell } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
-import tempRequire, { clearTempRequireCache } from '../Execution/tempRequire';
+import { unrequire } from '../Execution/UncachedRequire';
 import getAssetPath from '../getAssetPath';
 
 const appData = app.getPath('appData');
@@ -17,12 +17,13 @@ export async function readScript(script) {
 	}
 
 	try {
-		const ret = tempRequire('read-js', script);
-		clearTempRequireCache('read-js');
+		// eslint-disable-next-line import/no-dynamic-require, global-require
+		const ret = require(script);
+		unrequire(script);
 
 		return ret;
 	} catch (err) {
-		clearTempRequireCache('read-js');
+		unrequire(script);
 		throw err;
 	}
 }

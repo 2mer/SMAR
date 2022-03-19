@@ -19,7 +19,7 @@ function ProfileConfiguration({ running }) {
 
 	const profile = useProfile();
 
-	const { data: script, isSuccess: scriptSuccess } = useScript();
+	const { data: script, isSuccess: scriptSuccess, error } = useScript();
 
 	const handleConnectScript = () => {
 		linkProfileToScript(profile.id)
@@ -83,6 +83,11 @@ function ProfileConfiguration({ running }) {
 							flexDirection="column"
 							gap="1rem"
 						>
+							{error && (
+								<Typography color="error">
+									{(error as any)?.message}
+								</Typography>
+							)}
 							<Typography>
 								Profile has no associated script
 							</Typography>
