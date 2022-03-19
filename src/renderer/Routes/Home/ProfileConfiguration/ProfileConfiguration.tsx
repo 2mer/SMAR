@@ -24,7 +24,7 @@ function ProfileConfiguration({ running }) {
 	const handleConnectScript = () => {
 		linkProfileToScript(profile.id)
 			.then(() => {
-				queryClient.invalidateQueries('script');
+				queryClient.invalidateQueries(['script', profile.id]);
 			})
 			.catch(alert);
 	};

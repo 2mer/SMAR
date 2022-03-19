@@ -18,7 +18,7 @@ export default function ScriptControls({ running, setRunning }) {
 	const handleConnectScript = () => {
 		linkProfileToScript(profile.id)
 			.then(() => {
-				queryClient.invalidateQueries('script');
+				queryClient.invalidateQueries(['script', profile.id]);
 			})
 			.catch(alert);
 	};
@@ -26,7 +26,7 @@ export default function ScriptControls({ running, setRunning }) {
 	const handleEdit = () => {
 		editScript(profile?.script)
 			.then(() => {
-				queryClient.invalidateQueries('script');
+				queryClient.invalidateQueries(['script', profile.id]);
 			})
 			.catch(alert);
 	};
@@ -61,9 +61,9 @@ export default function ScriptControls({ running, setRunning }) {
 									direction: 'rtl',
 									textAlign: 'left',
 								}}
-								color="primary"
+								color={hasScript ? 'primary' : 'error'}
 							>
-								{scriptName}
+								{hasScript ? scriptName : 'No linked script'}
 							</Typography>
 						</Box>
 					</Tooltip>

@@ -23,18 +23,9 @@ export default function NewScriptModal({
 	);
 
 	const handleCreate = () => {
-		// dialog
-		// 	.showSaveDialog({
-		// 		buttonLabel: 'Save Script',
-		// 		defaultPath: 'scripts/script.js',
-		// 	})
-		// 	.then(({ filePath }) => {
-		// 		createScript(filePath, selectedTemplate);
-		// 	})
-		// 	.catch(alert);
 		createScript(profile.id, selectedTemplate)
 			.then(() => {
-				queryClient.invalidateQueries('script');
+				queryClient.invalidateQueries(['script', profile.id]);
 				onClose();
 			})
 			.catch(alert);

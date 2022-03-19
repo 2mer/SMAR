@@ -19,3 +19,7 @@
 ::-webkit-scrollbar-thumb:hover {
 	background: #393939;
 }
+
+::-webkit-scrollbar-corner {
+	background: transparent;
+}
