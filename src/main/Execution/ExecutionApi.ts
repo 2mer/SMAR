@@ -1,4 +1,5 @@
 import ExposedApi from './ExposedApi';
+import { unrequire } from './UncachedRequire';
 
 export function executeScript(script, parameters) {
 	ExposedApi.running = true;
@@ -11,7 +12,9 @@ export function executeScript(script, parameters) {
 
 	const runnable = new Promise(async (resolve, reject) => {
 		try {
-			const { script: scriptFunction } = global.scriptRequire(script);
+			// eslint-disable-next-line import/no-dynamic-require, global-require
+			const { script: scriptFunction } = require(script) as any;
+			unrequire(script);
 
 			await scriptFunction(ExposedApi, parameters);
 
