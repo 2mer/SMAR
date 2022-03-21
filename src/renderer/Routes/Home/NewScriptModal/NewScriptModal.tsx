@@ -29,6 +29,7 @@ export default function NewScriptModal({
 
 		createScript(pid, selectedTemplate)
 			.then(() => {
+				queryClient.invalidateQueries('settings');
 				queryClient.invalidateQueries(['script', pid, pscript]);
 				onClose();
 			})

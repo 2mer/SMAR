@@ -23,6 +23,7 @@ export default function ScriptControls({ running, setRunning }) {
 
 		linkProfileToScript(pid)
 			.then(() => {
+				queryClient.invalidateQueries('settings');
 				queryClient.invalidateQueries(['script', pid, pscript]);
 			})
 			.catch(alert);

@@ -5,6 +5,7 @@ module.exports = {
 			'execution:row',
 			{ id: 'amount', type: 'number' },
 			{ id: 'messageInterval', type: 'number' },
+			{ id: 'initialDelay', type: 'number' },
 		],
 		[
 			'messaging:column',
