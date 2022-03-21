@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import vm from 'vm';
+import axios from 'axios';
 
 export function loadModule(p, context) {
 	const fileData = readFileSync(p, 'utf8');
@@ -27,6 +28,7 @@ export default function vmRequire(this: any, p, isChild = false) {
 		module: {
 			exports: {},
 		},
+		axios,
 	} as any;
 
 	const boundRequire = vmRequire.bind(moduleContext);
