@@ -19,7 +19,7 @@ function Home() {
 			</Box>
 
 			<Box display="flex" width="100%" flex={1} gap="2rem">
-				<Paper sx={{ mb: '2rem' }}>
+				<Paper sx={{ mb: '2rem', flex: 1 }}>
 					{/* Script + execution controls */}
 					<ScriptControls running={running} setRunning={setRunning} />
 					<Divider />

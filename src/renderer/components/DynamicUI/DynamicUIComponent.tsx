@@ -7,7 +7,7 @@ import getDisplayName from './getDisplayName';
 
 export default function DynamicUIComponent({
 	parameter,
-	direction: prevDirection,
+	direction: prevDirection = undefined as any,
 	...rest
 }) {
 	const isArray = Array.isArray(parameter);
@@ -50,7 +50,11 @@ export default function DynamicUIComponent({
 		}
 
 		if (prevDirection) {
-			render = <Paper variant="outlined">{render}</Paper>;
+			render = (
+				<Paper variant="outlined" sx={{ p: '1rem' }}>
+					{render}
+				</Paper>
+			);
 		} else {
 			render = (
 				<>

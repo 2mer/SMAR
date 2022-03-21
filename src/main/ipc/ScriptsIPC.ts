@@ -1,12 +1,12 @@
 import { dialog, ipcMain } from 'electron';
-import path from 'path';
-import { createScript, openScript, readScript } from '../bl/ScriptsBL';
+import { createScript, openScript } from '../bl/ScriptsBL';
 import { updateProfileScript } from '../bl/ProfilesBL';
 import scriptTemplates from '../../common/scriptTemplates';
+import vmRequire from '../vm/vmRequire';
 
 export function scriptsIPC() {
 	ipcMain.handle('GET_SCRIPT', async (event, { script }) => {
-		const { parameters } = (await readScript(script)) as any;
+		const { parameters } = vmRequire(script);
 
 		return { parameters };
 	});
@@ -29,9 +29,6 @@ export function scriptsIPC() {
 
 		await createScript(filePath, foundTemplate.file);
 
-		// const relativeFilePath = path.relative(path.resolve('.'), filePath);
-
-		// await updateProfileScript(profile, relativeFilePath);
 		await updateProfileScript(profile, filePath);
 
 		return 'OK';
@@ -41,14 +38,12 @@ export function scriptsIPC() {
 		const {
 			filePaths: [filePath],
 		} = await dialog.showOpenDialog({
-			buttonLabel: 'Save Script',
+			buttonLabel: 'Select script',
 			defaultPath: 'scripts/script.js',
 			properties: ['openFile'],
 		});
 
-		const relativeFilePath = path.relative(path.resolve('.'), filePath);
-
-		await updateProfileScript(profile, relativeFilePath);
+		await updateProfileScript(profile, filePath);
 
 		return 'OK';
 	});

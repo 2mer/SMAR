@@ -4,6 +4,8 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
+	FormControl,
+	InputLabel,
 	MenuItem,
 	Select,
 } from '@mui/material';
@@ -23,9 +25,11 @@ export default function NewScriptModal({
 	);
 
 	const handleCreate = () => {
-		createScript(profile.id, selectedTemplate)
+		const { id: pid, script: pscript } = profile;
+
+		createScript(pid, selectedTemplate)
 			.then(() => {
-				queryClient.invalidateQueries(['script', profile.id]);
+				queryClient.invalidateQueries(['script', pid, pscript]);
 				onClose();
 			})
 			.catch(alert);
@@ -36,17 +40,23 @@ export default function NewScriptModal({
 			<DialogTitle>Create new script</DialogTitle>
 			<DialogContent>
 				<Box display="flex" flexDirection="column" gap="1rem" p="1rem">
-					<Select
-						label="Template"
-						value={selectedTemplate}
-						onChange={(e) => setSelectedTemplate(e.target.value)}
-					>
-						{scriptTemplates.map((t) => (
-							<MenuItem key={t.id} value={t.id}>
-								{t.name}
-							</MenuItem>
-						))}
-					</Select>
+					<FormControl fullWidth>
+						<InputLabel id="template-label-id">Template</InputLabel>
+						<Select
+							labelId="template-label-id"
+							label="Template"
+							value={selectedTemplate}
+							onChange={(e) =>
+								setSelectedTemplate(e.target.value)
+							}
+						>
+							{scriptTemplates.map((t) => (
+								<MenuItem key={t.id} value={t.id}>
+									{t.name}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 				</Box>
 			</DialogContent>
 			<DialogActions>

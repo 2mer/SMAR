@@ -1,5 +1,6 @@
+import { shell } from 'electron';
+import vmRequire from '../vm/vmRequire';
 import ExposedApi from './ExposedApi';
-import { unrequire } from './UncachedRequire';
 
 export function executeScript(script, parameters) {
 	ExposedApi.running = true;
@@ -13,10 +14,15 @@ export function executeScript(script, parameters) {
 	const runnable = new Promise(async (resolve, reject) => {
 		try {
 			// eslint-disable-next-line import/no-dynamic-require, global-require
-			const { script: scriptFunction } = require(script) as any;
-			unrequire(script);
+			const { script: scriptFunction } = vmRequire(script);
+
+			shell.beep();
 
 			await scriptFunction(ExposedApi, parameters);
+
+			shell.beep();
+			setTimeout(() => shell.beep(), 250);
+			setTimeout(() => shell.beep(), 250 * 2);
 
 			resolve('done');
 		} catch (err) {

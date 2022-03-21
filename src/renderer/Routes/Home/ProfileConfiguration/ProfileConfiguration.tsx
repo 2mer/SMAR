@@ -22,9 +22,10 @@ function ProfileConfiguration({ running }) {
 	const { data: script, isSuccess: scriptSuccess, error } = useScript();
 
 	const handleConnectScript = () => {
-		linkProfileToScript(profile.id)
+		const { id: pid, script: pscript } = profile;
+		linkProfileToScript(pid)
 			.then(() => {
-				queryClient.invalidateQueries(['script', profile.id]);
+				queryClient.invalidateQueries(['script', pid, pscript]);
 			})
 			.catch(alert);
 	};
@@ -141,6 +142,7 @@ function ProfileConfiguration({ running }) {
 					backdropFilter: 'blur(40px)',
 				}}
 				flex={1}
+				m="1rem"
 			>
 				No parameters exposed for tweaking
 			</Box>

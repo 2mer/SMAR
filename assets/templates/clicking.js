@@ -1,43 +1,21 @@
-module.smar = 'v1';
-
 module.exports = {
+	version: 'v1',
 	parameters: [
 		[
 			'execution:row',
 			{ id: 'amount', type: 'number' },
 			{ id: 'messageInterval', type: 'number' },
 		],
-		[
-			'messaging:column',
-			{ id: 'doubleEnter', type: 'boolean' },
-			[
-				':column',
-				{ id: 'messages', type: 'array' },
-				{ id: 'randomMessage', type: 'boolean' },
-			],
-		],
 	],
 
 	script: async (
 		api,
-		{
-			amount = -1,
-			messageInterval = 0,
-			messages = [],
-			randomMessage = false,
-			doubleEnter = false,
-		}
+		{ amount = -1, messageInterval = 0, initialDelay = 0 }
 	) => {
-		for (let i = 0; i < amount; i++) {
-			const messageIndex = randomMessage
-				? Math.round(Math.random() * messages.length)
-				: i % messages.length;
+		await api.sleep(initialDelay);
 
-			if (doubleEnter) {
-				api.keyTap('enter');
-			}
-
-			api.sendMessage(messages[messageIndex]);
+		for (let i = 0; i < amount && api.running; i++) {
+			api.click();
 
 			await api.sleep(messageInterval);
 		}

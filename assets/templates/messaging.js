@@ -1,6 +1,5 @@
-module.smar = 'v1';
-
 module.exports = {
+	version: 'v1',
 	parameters: [
 		[
 			'execution:row',
@@ -9,12 +8,12 @@ module.exports = {
 		],
 		[
 			'messaging:column',
-			{ id: 'doubleEnter', type: 'boolean' },
 			[
-				':column',
-				{ id: 'messages', type: 'array' },
+				':row',
+				{ id: 'doubleEnter', type: 'boolean' },
 				{ id: 'randomMessage', type: 'boolean' },
 			],
+			{ id: 'messages', type: 'array' },
 		],
 	],
 
@@ -23,12 +22,15 @@ module.exports = {
 		{
 			amount = -1,
 			messageInterval = 0,
+			initialDelay = 0,
 			messages = [],
 			randomMessage = false,
 			doubleEnter = false,
 		}
 	) => {
-		for (let i = 0; i < amount; i++) {
+		await api.sleep(initialDelay);
+
+		for (let i = 0; i < amount && api.running; i++) {
 			const messageIndex = randomMessage
 				? Math.round(Math.random() * messages.length)
 				: i % messages.length;

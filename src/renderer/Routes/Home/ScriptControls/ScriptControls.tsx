@@ -1,12 +1,15 @@
-import { Edit, FileOpen, InsertDriveFile } from '@mui/icons-material';
+import { Edit, FileOpen, InsertDriveFile, NoteAdd } from '@mui/icons-material';
 import { alpha, Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import queryClient from 'renderer/queryClient';
 import ExecutionControls from '../ExecutionControls/ExecutionControls';
+import NewScriptModal from '../NewScriptModal/NewScriptModal';
 import useProfile from '../ProfileControls/useProfile';
 import { editScript, linkProfileToScript } from '../Service/ScriptsService';
 
 export default function ScriptControls({ running, setRunning }) {
+	const [newScriptModalOpen, setNewScriptModalOpen] = useState(false);
+
 	const profile = useProfile();
 
 	const hasScript = Boolean(profile?.script);
@@ -16,17 +19,21 @@ export default function ScriptControls({ running, setRunning }) {
 	}, [profile?.script]);
 
 	const handleConnectScript = () => {
-		linkProfileToScript(profile.id)
+		const { id: pid, script: pscript } = profile;
+
+		linkProfileToScript(pid)
 			.then(() => {
-				queryClient.invalidateQueries(['script', profile.id]);
+				queryClient.invalidateQueries(['script', pid, pscript]);
 			})
 			.catch(alert);
 	};
 
 	const handleEdit = () => {
-		editScript(profile?.script)
+		const { id: pid, script: pscript } = profile;
+
+		editScript(pscript)
 			.then(() => {
-				queryClient.invalidateQueries(['script', profile.id]);
+				queryClient.invalidateQueries(['script', pid, pscript]);
 			})
 			.catch(alert);
 	};
@@ -70,18 +77,27 @@ export default function ScriptControls({ running, setRunning }) {
 					<Box display="flex">
 						<Tooltip title="Edit Script">
 							<span>
-								<IconButton onClick={handleEdit}>
+								<IconButton
+									disabled={!hasScript}
+									onClick={handleEdit}
+								>
 									<Edit />
 								</IconButton>
 							</span>
 						</Tooltip>
 						<Tooltip title="Change Script">
 							<span>
-								<IconButton
-									disabled={!hasScript}
-									onClick={handleConnectScript}
-								>
+								<IconButton onClick={handleConnectScript}>
 									<FileOpen />
+								</IconButton>
+							</span>
+						</Tooltip>
+						<Tooltip title="Create Script">
+							<span>
+								<IconButton
+									onClick={() => setNewScriptModalOpen(true)}
+								>
+									<NoteAdd />
 								</IconButton>
 							</span>
 						</Tooltip>
@@ -89,6 +105,12 @@ export default function ScriptControls({ running, setRunning }) {
 				</Box>
 				<ExecutionControls running={running} setRunning={setRunning} />
 			</Box>
+
+			<NewScriptModal
+				profile={profile}
+				open={newScriptModalOpen}
+				onClose={() => setNewScriptModalOpen(false)}
+			/>
 		</Box>
 	);
 }

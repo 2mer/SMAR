@@ -26,7 +26,7 @@ export default class ExposedApi {
 	 * @param msg the message to send to the
 	 * @param options options on sending message
 	 */
-	public static sendMessage(msg: string, { doubleEnter = false } = {}) {
+	public static sendMessage(msg = '', { doubleEnter = false } = {}) {
 		clipboard.writeText(msg);
 
 		if (doubleEnter) {
