@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { Box, Divider, Paper, Typography } from '@mui/material';
 import DynamicCheckbox from './DynamicCheckbox';
-import DynamicChipField from './DynamicChipField';
+import DynamicDragList from './DynamicDragList';
 import DynamicTextfield from './DynamicTextfield';
 import getDisplayName from './getDisplayName';
 
@@ -81,7 +81,7 @@ export default function DynamicUIComponent({
 		case 'text':
 			return <DynamicTextfield parameter={parameter} {...rest} />;
 		case 'array':
-			return <DynamicChipField parameter={parameter} {...rest} />;
+			return <DynamicDragList parameter={parameter} {...rest} />;
 		case 'boolean':
 			return <DynamicCheckbox parameter={parameter} {...rest} />;
 		default:
